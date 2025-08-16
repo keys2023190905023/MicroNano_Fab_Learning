@@ -85,7 +85,7 @@ Optics project reduced image of mask onto wafer. Used in advanced lithography.
 
 ### 解析度（Resolution）由以下公式近似决定：
 
-$R = \frac{k_1 \cdot \lambda}{NA}$
+$$ R = \frac{k_1 \cdot \lambda}{NA} $$
 
 * $R$：最小特征尺寸（Resolution）
 * $\lambda$：曝光波长
