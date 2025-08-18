@@ -290,7 +290,7 @@
 
         <footer class="footer">
             <p>© 2025 MicroNano Fabrication Learning Notes | UESTC Glasgow College</p>
-            <p>🔗 <a href="https://github.com/your-username/micronano-fab-notes" target="_blank" rel="noopener">GitHub Repository</a> | 
+            <p>🔗 <a href="https://github.com/keys2023190905023/MicroNano_Fab_Learning" target="_blank" rel="noopener">GitHub Repository</a> | 
                📧 <a href="mailto:contact@example.com">Contact</a> | 
                🌐 <a href="#docs">Documentation</a>
             </p>
@@ -334,10 +334,12 @@
         // --- 将页面与 GitHub 文章联动 ---
         // 1) 基本仓库信息（修改成你的用户名/分支）
         const GH = {
-          user: 'your-username',        // ← 改成你的 GitHub 用户名
-          repo: 'micronano-fab-notes',  // ← 改成你的仓库名
-          branch: 'main',               // 若是 master 请改为 'master'
-          baseBlob() { return `https://github.com/${this.user}/${this.repo}/blob/${this.branch}/docs/`; },
+          user: 'keys2023190905023',
+          repo: 'MicroNano_Fab_Learning',
+          branch: 'main',
+          pathPrefix: '',
+          pathPrefixNorm() { return this.pathPrefix ? (this.pathPrefix.endsWith('/') ? this.pathPrefix : this.pathPrefix + '/') : ''; },
+          baseBlob() { return `https://github.com/${this.user}/${this.repo}/blob/${this.branch}/` + this.pathPrefixNorm(); },
           basePages() { return `https://${this.user}.github.io/${this.repo}/`; }
         };
         // 2) 使用 GitHub Pages 还是直接跳转到仓库里的 .md 文件
@@ -345,24 +347,24 @@
 
         // 3) 章节 -> 文件名 映射（把下面的文件名改成你的实际文章路径）
         const CHAPTER_LINKS = {
-          chapter1: 'Nano_Tech_Leaining_Ch1.md',
-          chapter2: 'Nano_Tech_Leaining_Ch2.md',
-          chapter3: 'Nano_Tech_Learning_Ch3.md',
-          chapter4: 'Nano_Tech_Learning_Ch4.md',
+          chapter1: 'Nano_Tech_Learning_Ch1.md',
+          chapter2: 'Nano_Tech_Learning_Ch2.md',
+          chapter3: 'Nano_Tech_Leaining_Ch3.md',
+          chapter4: 'Nano_Tech_Leaining_Ch4.md',
           chapter5: 'Nano_Tech_Learning_Ch5.md',
           chapter6: 'Nano_Tech_Learning_Ch6.md',
-          chapter7: 'Nano_Tech_Learning_Ch7.md',
-          chapter8: 'Nano_Tech_Learning_ch8.md'
+          chapter7: 'Nano_Tech_Learning_ch7.md',
+          chapter8: 'Nano_Tech_Learning_Ch8.md'
         };
 
         // 4) 工艺流程步骤 -> 文件名 映射
         const FLOW_LINKS = {
-          cleaning: 'Nano_Tech_Leaining_Ch2.md#process-flow',
-          coating: 'Nano_Tech_Leaining_Ch2.md#process-flow',
-          exposure: 'Nano_Tech_Leaining_Ch2.md#process-flow',
+          cleaning: 'Nano_Tech_Learning_Ch2.md#process-flow',
+          coating: 'Nano_Tech_Learning_Ch2.md#process-flow',
+          exposure: 'Nano_Tech_Learning_Ch2.md#process-flow',
           transfer: 'Nano_Tech_Learning_Ch5.md',
           deposition: 'Nano_Tech_Learning_Ch6.md',
-          characterization: 'Nano_Tech_Learning_Ch7.md'
+          characterization: 'Nano_Tech_Learning_ch7.md'
         };
 
         // 5) 层次结构 -> 文件名 映射（可选，没有就先留空）
@@ -372,19 +374,24 @@
           metal2: 'Nano_Tech_Learning_Ch6.md',
           via1: 'Nano_Tech_Learning_Ch6.md',
           metal1: 'Nano_Tech_Learning_Ch6.md',
-          contact: 'Nano_Tech_Learning_ch8.md',
-          poly: 'Nano_Tech_Learning_ch8.md',
-          gate: 'Nano_Tech_Learning_ch8.md',
-          substrate: 'Nano_Tech_Leaining_Ch1.md'
+          contact: 'Nano_Tech_Learning_Ch8.md',
+          poly: 'Nano_Tech_Learning_Ch8.md',
+          gate: 'Nano_Tech_Learning_Ch8.md',
+          substrate: 'Nano_Tech_Learning_Ch1.md'
         };
 
         function resolveUrl(slug) {
           if (!slug) return '#';
+          const prefix = GH.pathPrefixNorm();
           if (USE_PAGES) {
-            // 假设 Pages 对 docs/*.md 有对应生成的 .html（Jekyll/静态站），否则把 USE_PAGES 设为 false
             const noExt = slug.replace(/\.md$/,'');
-            return GH.basePages() + 'docs/' + noExt + '.html';
-          } else {
+            return GH.basePages() + prefix + noExt + '.html';
+          }
+          return GH.baseBlob() + slug;
+        } else {
+            return GH.baseBlob() + slug;
+          }
+        } else {
             return GH.baseBlob() + slug;
           }
         }
