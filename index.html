@@ -1,6 +1,1051 @@
-Add micronano fabrication learning notes website
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微纳工艺学习笔记 - MicroNano Fab Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-- Modern GitHub-style dark theme
-- Interactive process calculator
-- Chip visualization layers
-- Responsive design
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 204, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+                linear-gradient(135deg, #0d1117 0%, #161b22 50%, #21262d 100%);
+            min-height: 100vh;
+            color: #c9d1d9;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* GitHub风格网格背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(48, 54, 61, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(48, 54, 61, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* 增强的芯片背景 */
+        .chip-bg {
+            position: fixed;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            animation: chipFloat 8s ease-in-out infinite alternate;
+        }
+
+        .chip-bg:nth-child(1) {
+            top: 5%;
+            right: 5%;
+            width: 400px;
+            height: 400px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='chipGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300ccff' opacity='0.8'/%3E%3Cstop offset='100%25' stop-color='%2300ff88' opacity='0.8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='30' y='30' width='140' height='140' rx='8' fill='none' stroke='url(%23chipGrad)' stroke-width='2'/%3E%3Cpath d='M50,30 L50,10 M90,30 L90,10 M110,30 L110,10 M150,30 L150,10 M50,170 L50,190 M90,170 L90,190 M110,170 L110,190 M150,170 L150,190 M30,50 L10,50 M30,90 L10,90 M30,110 L10,110 M30,150 L10,150 M170,50 L190,50 M170,90 L190,90 M170,110 L190,110 M170,150 L190,150' stroke='url(%23chipGrad)' stroke-width='2'/%3E%3Crect x='60' y='60' width='80' height='80' rx='4' fill='url(%23chipGrad)' opacity='0.2'/%3E%3Cg stroke='%23ffffff' stroke-width='1' opacity='0.6'%3E%3Cpath d='M70,70 L130,70 M70,80 L130,80 M70,90 L130,90 M70,100 L130,100 M70,110 L130,110 M70,120 L130,120 M70,130 L130,130'/%3E%3Cpath d='M80,70 L80,130 M90,70 L90,130 M100,70 L100,130 M110,70 L110,130 M120,70 L120,130'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .chip-bg:nth-child(2) {
+            bottom: 10%;
+            left: 5%;
+            width: 300px;
+            height: 300px;
+            animation-delay: -3s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'%3E%3Cdefs%3E%3CradialGradient id='waferGrad' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%2300ff88' opacity='0.6'/%3E%3Cstop offset='100%25' stop-color='%2300ccff' opacity='0.3'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='75' cy='75' r='70' fill='url(%23waferGrad)' stroke='%2300ccff' stroke-width='2'/%3E%3Cg stroke='%2300ccff' stroke-width='0.8' opacity='0.5'%3E%3Cpath d='M20,75 L130,75 M75,20 L75,130 M35,35 L115,115 M115,35 L35,115'/%3E%3C/g%3E%3Cg fill='%2300ff88' opacity='0.4'%3E%3Crect x='40' y='40' width='15' height='15' rx='2'/%3E%3Crect x='60' y='40' width='15' height='15' rx='2'/%3E%3Crect x='80' y='40' width='15' height='15' rx='2'/%3E%3Crect x='100' y='40' width='15' height='15' rx='2'/%3E%3Crect x='40' y='60' width='15' height='15' rx='2'/%3E%3Crect x='60' y='60' width='15' height='15' rx='2'/%3E%3Crect x='80' y='60' width='15' height='15' rx='2'/%3E%3Crect x='100' y='60' width='15' height='15' rx='2'/%3E%3Crect x='40' y='80' width='15' height='15' rx='2'/%3E%3Crect x='60' y='80' width='15' height='15' rx='2'/%3E%3Crect x='80' y='80' width='15' height='15' rx='2'/%3E%3Crect x='100' y='80' width='15' height='15' rx='2'/%3E%3Crect x='40' y='100' width='15' height='15' rx='2'/%3E%3Crect x='60' y='100' width='15' height='15' rx='2'/%3E%3Crect x='80' y='100' width='15' height='15' rx='2'/%3E%3Crect x='100' y='100' width='15' height='15' rx='2'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .chip-bg:nth-child(3) {
+            top: 40%;
+            right: -10%;
+            width: 250px;
+            height: 250px;
+            animation-delay: -5s;
+            animation-duration: 12s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3ClinearGradient id='nanoGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300ccff' opacity='0.7'/%3E%3Cstop offset='50%25' stop-color='%2300ff88' opacity='0.5'/%3E%3Cstop offset='100%25' stop-color='%2300ccff' opacity='0.7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke='url(%23nanoGrad)' fill='none' stroke-width='1.5'%3E%3Cpath d='M20,20 L100,20 L100,100 L20,100 Z'/%3E%3Cpath d='M30,30 L90,30 L90,90 L30,90 Z'/%3E%3Cpath d='M40,40 L80,40 L80,80 L40,80 Z'/%3E%3Cpath d='M50,50 L70,50 L70,70 L50,70 Z'/%3E%3C/g%3E%3Ccircle cx='60' cy='60' r='5' fill='url(%23nanoGrad)' opacity='0.8'/%3E%3Cg stroke='%2300ccff' stroke-width='0.5' opacity='0.6'%3E%3Cpath d='M30,40 L30,80 M40,30 L40,90 M50,40 L50,80 M60,30 L60,90 M70,40 L70,80 M80,30 L80,90 M90,40 L90,80'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        @keyframes chipFloat {
+            0% { 
+                transform: translateY(0px) rotate(0deg) scale(1); 
+                opacity: 0.02; 
+            }
+            100% { 
+                transform: translateY(-30px) rotate(5deg) scale(1.1); 
+                opacity: 0.06; 
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 0;
+            color: #f0f6fc;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 200px;
+            background: 
+                radial-gradient(ellipse at center, 
+                    rgba(0, 204, 255, 0.1) 0%, 
+                    rgba(0, 255, 136, 0.08) 50%, 
+                    transparent 80%);
+            filter: blur(60px);
+            animation: headerGlow 6s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes headerGlow {
+            0% { transform: translateX(-50%) scale(0.8); opacity: 0.3; }
+            100% { transform: translateX(-50%) scale(1.3); opacity: 0.7; }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-shadow: 
+                2px 2px 4px rgba(0,0,0,0.8),
+                0 0 40px rgba(0, 204, 255, 0.3);
+            background: linear-gradient(135deg, #00ccff 0%, #00ff88 50%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .header h1::before {
+            content: '⚡';
+            position: absolute;
+            left: -100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 4rem;
+            color: #00ccff;
+            opacity: 0.6;
+            animation: pulseGlow 2s ease-in-out infinite alternate;
+        }
+
+        .header h1::after {
+            content: '🔬';
+            position: absolute;
+            right: -100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 4rem;
+            opacity: 0.6;
+            animation: pulseGlow 2s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes pulseGlow {
+            0% { 
+                transform: translateY(-50%) scale(1); 
+                filter: drop-shadow(0 0 10px rgba(0, 204, 255, 0.5)); 
+            }
+            100% { 
+                transform: translateY(-50%) scale(1.2); 
+                filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.7)); 
+            }
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .badge {
+            background: rgba(33, 38, 45, 0.8);
+            border: 1px solid rgba(0, 204, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            color: #e6edf3;
+        }
+
+        .badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .badge:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 10px 25px rgba(0, 204, 255, 0.2),
+                0 0 30px rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.6);
+            color: #ffffff;
+        }
+
+        .badge:hover::before {
+            left: 100%;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .card {
+            background: rgba(22, 27, 34, 0.95);
+            border: 1px solid rgba(48, 54, 61, 0.6);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 
+                0 16px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(0, 204, 255, 0.1);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                rgba(0, 204, 255, 0.8) 0%, 
+                rgba(0, 255, 136, 0.8) 50%, 
+                rgba(0, 204, 255, 0.8) 100%);
+            animation: scanLine 6s linear infinite;
+        }
+
+        @keyframes scanLine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 
+                0 24px 48px rgba(0, 0, 0, 0.3),
+                0 0 80px rgba(0, 204, 255, 0.15),
+                inset 0 1px 0 rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 204, 255, 0.4);
+        }
+
+        .card h3 {
+            color: #f0f6fc;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            font-weight: 600;
+            text-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+        }
+
+        .chapter-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .chapter-item {
+            background: linear-gradient(135deg, 
+                rgba(13, 17, 23, 0.9) 0%, 
+                rgba(22, 27, 34, 0.9) 100%);
+            color: #e6edf3;
+            padding: 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(48, 54, 61, 0.4);
+        }
+
+        .chapter-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 204, 255, 0.1), 
+                rgba(0, 255, 136, 0.1),
+                transparent);
+            transition: left 0.8s ease;
+        }
+
+        .chapter-item:hover::before {
+            left: 100%;
+        }
+
+        .chapter-item:hover {
+            transform: translateY(-8px) scale(1.03);
+            text-decoration: none;
+            color: #ffffff;
+            box-shadow: 
+                0 16px 32px rgba(0, 0, 0, 0.4),
+                0 0 60px rgba(0, 204, 255, 0.2),
+                0 0 100px rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 204, 255, 0.5);
+        }
+
+        .chapter-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #00ccff;
+        }
+
+        .chapter-item p {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            font-weight: 300;
+        }
+
+        /* 增强计算器样式 */
+        .calculator {
+            background: rgba(13, 17, 23, 0.98);
+            border: 1px solid rgba(48, 54, 61, 0.6);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 30px;
+            box-shadow: 
+                0 16px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(0, 204, 255, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+        }
+
+        .calculator h3 {
+            color: #f0f6fc;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #8b949e;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, 
+                rgba(0, 204, 255, 0.2), 
+                rgba(0, 255, 136, 0.2));
+            color: #ffffff;
+            box-shadow: 
+                0 0 20px rgba(0, 204, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 204, 255, 0.4);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(33, 38, 45, 0.6);
+            color: #e6edf3;
+        }
+
+        .calc-section h4 {
+            color: #00ccff;
+            margin-bottom: 18px;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.4);
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .input-group label {
+            min-width: 160px;
+            font-size: 0.95rem;
+            color: #c9d1d9;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid rgba(48, 54, 61, 0.6);
+            background: rgba(13, 17, 23, 0.8);
+            color: #f0f6fc;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'SF Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #00ccff;
+            outline: none;
+            box-shadow: 
+                0 0 20px rgba(0, 204, 255, 0.3),
+                inset 0 1px 0 rgba(0, 204, 255, 0.1);
+            background: rgba(13, 17, 23, 0.95);
+        }
+
+        .result {
+            background: linear-gradient(135deg, #00ccff 0%, #00ff88 100%);
+            color: #000000;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 
+                0 8px 20px rgba(0, 204, 255, 0.3),
+                0 0 40px rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: 'SF Mono', monospace;
+            font-size: 1.1rem;
+        }
+
+        /* 科技感流程步骤 */
+        .process-step {
+            background: linear-gradient(135deg, 
+                rgba(22, 27, 34, 0.9) 0%, 
+                rgba(33, 38, 45, 0.9) 100%);
+            border: 1px solid rgba(0, 204, 255, 0.3);
+            padding: 24px 18px;
+            border-radius: 14px;
+            text-align: center;
+            color: #f0f6fc;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .process-step::before {
+            content: attr(data-step);
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #00ccff, #00ff88);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 
+                0 0 15px rgba(0, 204, 255, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            color: #000000;
+        }
+
+        .process-step:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: rgba(0, 255, 136, 0.6);
+            box-shadow: 
+                0 20px 40px rgba(0, 204, 255, 0.25),
+                0 0 60px rgba(0, 255, 136, 0.2);
+        }
+
+        .process-step:hover .step-detail {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 15px rgba(0, 204, 255, 0.4));
+        }
+
+        .step-detail {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%) translateY(15px);
+            background: rgba(13, 17, 23, 0.95);
+            border: 1px solid rgba(0, 204, 255, 0.5);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 芯片层次可视化增强 */
+        .chip-visualization {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(13, 17, 23, 0.6);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 204, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chip-visualization::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 20px,
+                    rgba(0, 204, 255, 0.02) 20px,
+                    rgba(0, 204, 255, 0.02) 40px
+                );
+            animation: slidePattern 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes slidePattern {
+            0% { transform: translate(-50%, -50%); }
+            100% { transform: translate(-48%, -52%); }
+        }
+
+        .chip-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 700px;
+            margin: 0 auto;
+            perspective: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .layer {
+            color: #000000;
+            padding: 16px 24px;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            font-family: 'SF Mono', monospace;
+        }
+
+        .layer::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: width 0.6s ease;
+        }
+
+        .layer:hover {
+            transform: translateX(15px) rotateY(8deg) scale(1.02);
+            box-shadow: -8px 8px 20px rgba(0, 204, 255, 0.3);
+            border-color: rgba(0, 255, 136, 0.6);
+        }
+
+        .layer:hover::before {
+            width: 100%;
+        }
+
+        .layer[data-layer="substrate"] { 
+            background: linear-gradient(90deg, #4a4a4a, #666666, #4a4a4a);
+            order: 9;
+        }
+        .layer[data-layer="gate"] { 
+            background: linear-gradient(90deg, #ff4757, #ff6b7a, #ff4757);
+            order: 8;
+        }
+        .layer[data-layer="poly"] { 
+            background: linear-gradient(90deg, #00ccff, #4dd0e1, #00ccff);
+            order: 7;
+        }
+        .layer[data-layer="contact"] { 
+            background: linear-gradient(90deg, #ffd700, #ffeb3b, #ffd700);
+            order: 6;
+        }
+        .layer[data-layer="metal1"] { 
+            background: linear-gradient(90deg, #00ff88, #4caf50, #00ff88);
+            order: 5;
+        }
+        .layer[data-layer="via1"] { 
+            background: linear-gradient(90deg, #ff8a80, #ff5722, #ff8a80);
+            order: 4;
+        }
+        .layer[data-layer="metal2"] { 
+            background: linear-gradient(90deg, #00ccff, #03a9f4, #00ccff);
+            order: 3;
+        }
+        .layer[data-layer="via2"] { 
+            background: linear-gradient(90deg, #ffab40, #ff9800, #ffab40);
+            order: 2;
+        }
+        .layer[data-layer="metal3"] { 
+            background: linear-gradient(90deg, #00ff88, #8bc34a, #00ff88);
+            order: 1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .header h1::before,
+            .header h1::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .chapter-nav {
+                grid-template-columns: 1fr;
+            }
+            
+            .badges {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .process-flow-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 50px 0 30px;
+            color: rgba(201, 209, 217, 0.8);
+            border-top: 1px solid rgba(48, 54, 61, 0.3);
+            margin-top: 50px;
+        }
+
+        .footer a {
+            color: #00ccff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        /* 增强的流程图网格 */
+        .process-flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 增强的芯片背景元素 -->
+        <div class="chip-bg"></div>
+        <div class="chip-bg"></div>
+        <div class="chip-bg"></div>
+        
+        <header class="header">
+            <h1>微纳工艺学习笔记</h1>
+            <p>MicroNano Fabrication Learning Notes</p>
+            <p style="font-size: 1rem; font-family: 'SF Mono', monospace;">UESTC Glasgow College | 微纳制造系统学习笔记</p>
+            <div class="badges">
+                <span class="badge">🔬 Photolithography</span>
+                <span class="badge">⚡ E-beam Lithography</span>
+                <span class="badge">🖨️ Nanoimprint</span>
+                <span class="badge">🧪 Etching Process</span>
+                <span class="badge">🎯 Thin Film Deposition</span>
+                <span class="badge">📊 Process Control</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <h3>📖 章节导航 Chapter Navigation</h3>
+                <div class="chapter-nav">
+                    <a href="#chapter1" class="chapter-item">
+                        <h4>Ch1: 纳米技术基础</h4>
+                        <p>Introduction to Nanotechnology</p>
+                    </a>
+                    <a href="#chapter2" class="chapter-item">
+                        <h4>Ch2: 光刻技术</h4>
+                        <p>Photolithography Process</p>
+                    </a>
+                    <a href="#chapter3" class="chapter-item">
+                        <h4>Ch3: 电子束光刻</h4>
+                        <p>Electron Beam Lithography</p>
+                    </a>
+                    <a href="#chapter4" class="chapter-item">
+                        <h4>Ch4: 纳米压印</h4>
+                        <p>Nanoimprint Lithography</p>
+                    </a>
+                    <a href="#chapter5" class="chapter-item">
+                        <h4>Ch5: 刻蚀工艺</h4>
+                        <p>Etching Techniques</p>
+                    </a>
+                    <a href="#chapter6" class="chapter-item">
+                        <h4>Ch6: 薄膜沉积</h4>
+                        <p>Thin Film Deposition</p>
+                    </a>
+                    <a href="#chapter7" class="chapter-item">
+                        <h4>Ch7: 表征手段</h4>
+                        <p>Characterization Tools</p>
+                    </a>
+                    <a href="#chapter8" class="chapter-item">
+                        <h4>Ch8: 器件制造</h4>
+                        <p>Device Fabrication</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🧮 工艺计算器 Process Calculator</h3>
+                <div class="tabs">
+                    <div class="tab active" onclick="showTab('lithography')">光刻 Lithography</div>
+                    <div class="tab" onclick="showTab('etching')">刻蚀 Etching</div>
+                    <div class="tab" onclick="showTab('deposition')">沉积 Deposition</div>
+                </div>
+
+                <div id="lithography" class="tab-content active">
+                    <div class="calc-section">
+                        <h4>光刻胶厚度计算 Resist Thickness</h4>
+                        <div class="input-group">
+                            <label>旋涂速度 Spin Speed (rpm):</label>
+                            <input type="number" id="spinSpeed" value="3000" onchange="calculateResistThickness()">
+                        </div>
+                        <div class="input-group">
+                            <label>光刻胶粘度 Viscosity (cSt):</label>
+                            <input type="number" id="viscosity" value="10" onchange="calculateResistThickness()">
+                        </div>
+                        <div class="result" id="resistResult">厚度 Thickness: 1.2 μm</div>
+                    </div>
+                </div>
+
+                <div id="etching" class="tab-content">
+                    <div class="calc-section">
+                        <h4>刻蚀时间计算 Etch Time Calculation</h4>
+                        <div class="input-group">
+                            <label>目标深度 Target Depth (nm):</label>
+                            <input type="number" id="etchDepth" value="100" onchange="calculateEtchTime()">
+                        </div>
+                        <div class="input-group">
+                            <label>刻蚀速率 Etch Rate (nm/min):</label>
+                            <input type="number" id="etchRate" value="50" onchange="calculateEtchTime()">
+                        </div>
+                        <div class="input-group">
+                            <label>选择比 Selectivity:</label>
+                            <input type="number" id="selectivity" value="10" onchange="calculateEtchTime()">
+                        </div>
+                        <div class="result" id="etchResult">刻蚀时间 Etch Time: 2.0 min</div>
+                    </div>
+                </div>
+
+                <div id="deposition" class="tab-content">
+                    <div class="calc-section">
+                        <h4>薄膜沉积参数 Film Deposition</h4>
+                        <div class="input-group">
+                            <label>目标厚度 Target Thickness (nm):</label>
+                            <input type="number" id="filmThickness" value="200" onchange="calculateDeposition()">
+                        </div>
+                        <div class="input-group">
+                            <label>沉积速率 Deposition Rate (Å/s):</label>
+                            <input type="number" id="depositionRate" value="2" onchange="calculateDeposition()">
+                        </div>
+                        <div class="result" id="depositionResult">沉积时间 Deposition Time: 16.7 min</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="calculator">
+            <h3>📊 工艺流程图 Process Flow Diagram</h3>
+            <div class="process-flow-grid">
+                <div class="process-step" data-step="1">
+                    <div class="step-icon">🧹</div>
+                    <strong>基底清洗</strong><br>
+                    <small>Substrate Cleaning</small>
+                    <div class="step-detail">RCA清洗 | 等离子处理 | 表面活化</div>
+                </div>
+                <div class="process-step" data-step="2">
+                    <div class="step-icon">🎨</div>
+                    <strong>光刻胶涂布</strong><br>
+                    <small>Resist Coating</small>
+                    <div class="step-detail">旋涂工艺 | 预烘处理 | 厚度控制</div>
+                </div>
+                <div class="process-step" data-step="3">
+                    <div class="step-icon">💡</div>
+                    <strong>曝光显影</strong><br>
+                    <small>Exposure & Development</small>
+                    <div class="step-detail">UV光刻 | 电子束 | 掩膜对准</div>
+                </div>
+                <div class="process-step" data-step="4">
+                    <div class="step-icon">⚡</div>
+                    <strong>图案转移</strong><br>
+                    <small>Pattern Transfer</small>
+                    <div class="step-detail">RIE刻蚀 | 湿法刻蚀 | 离子注入</div>
+                </div>
+                <div class="process-step" data-step="5">
+                    <div class="step-icon">🎯</div>
+                    <strong>薄膜沉积</strong><br>
+                    <small>Thin Film Deposition</small>
+                    <div class="step-detail">CVD | PVD | ALD | 溅射</div>
+                </div>
+                <div class="process-step" data-step="6">
+                    <div class="step-icon">🔍</div>
+                    <strong>检测表征</strong><br>
+                    <small>Characterization</small>
+                    <div class="step-detail">SEM | AFM | 轮廓仪 | 椭偏仪</div>
+                </div>
+            </div>
+            
+            <!-- 增强的芯片结构可视化 -->
+            <div class="chip-visualization">
+                <h4 style="color: #00ccff; text-align: center; margin: 40px 0 30px; font-size: 1.4rem; text-shadow: 0 0 15px rgba(0, 204, 255, 0.4);">
+                    🔬 集成电路层次结构 IC Layer Structure
+                </h4>
+                <div class="chip-layers">
+                    <div class="layer" data-layer="metal3">Metal 3 Layer - 顶层金属互连</div>
+                    <div class="layer" data-layer="via2">Via 2 Layer - 金属间通孔</div>
+                    <div class="layer" data-layer="metal2">Metal 2 Layer - 中层金属互连</div>
+                    <div class="layer" data-layer="via1">Via 1 Layer - 金属间通孔</div>
+                    <div class="layer" data-layer="metal1">Metal 1 Layer - 底层金属互连</div>
+                    <div class="layer" data-layer="contact">Contact Layer - 器件接触层</div>
+                    <div class="layer" data-layer="poly">Polysilicon Layer - 多晶硅栅极</div>
+                    <div class="layer" data-layer="gate">Gate Oxide Layer - 栅氧化层</div>
+                    <div class="layer" data-layer="substrate">Silicon Substrate - 硅基底</div>
+                </div>
+                <div style="text-align: center; margin-top: 25px; color: #8b949e; font-size: 0.9rem;">
+                    📐 点击层次查看详细信息 | 典型CMOS工艺节点: 28nm - 5nm
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© 2025 MicroNano Fabrication Learning Notes | UESTC Glasgow College</p>
+            <p>🔗 <a href="https://github.com/your-username/micronano-fab-notes">GitHub Repository</a> | 
+               📧 <a href="mailto:contact@example.com">Contact</a> | 
+               🌐 <a href="#docs">Documentation</a>
+            </p>
+            <div style="margin-top: 20px; font-size: 0.8rem; opacity: 0.7;">
+                ⚡ Powered by Modern Web Technologies | Built with ❤️ for Learning
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // 隐藏所有tab内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有tab的active状态
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的tab内容
+            document.getElementById(tabName).classList.add('active');
+            
+            // 添加active状态到选中的tab
+            event.target.classList.add('active');
+        }
+
+        function calculateResistThickness() {
+            const spinSpeed = parseFloat(document.getElementById('spinSpeed').value) || 3000;
+            const viscosity = parseFloat(document.getElementById('viscosity').value) || 10;
+            
+            // 改进的光刻胶厚度计算公式
+            const thickness = (Math.sqrt(viscosity * 100) / Math.sqrt(spinSpeed / 1000) * 0.65).toFixed(2);
+            
+            document.getElementById('resistResult').textContent = `厚度 Thickness: ${thickness} μm`;
+        }
+
+        function calculateEtchTime() {
+            const depth = parseFloat(document.getElementById('etchDepth').value) || 100;
+            const rate = parseFloat(document.getElementById('etchRate').value) || 50;
+            const selectivity = parseFloat(document.getElementById('selectivity').value) || 10;
+            
+            const time = (depth / rate).toFixed(1);
+            const maskThickness = (depth / selectivity).toFixed(1);
+            
+            document.getElementById('etchResult').innerHTML = `
+                刻蚀时间 Etch Time: ${time} min<br>
+                <small style="opacity: 0.8;">掩膜消耗 Mask Loss: ${maskThickness} nm</small>
+            `;
+        }
+
+        function calculateDeposition() {
+            const thickness = parseFloat(document.getElementById('filmThickness').value) || 200;
+            const rate = parseFloat(document.getElementById('depositionRate').value) || 2;
+            
+            const timeMinutes = (thickness * 10 / rate / 60).toFixed(1);
+            const timeSeconds = (thickness * 10 / rate).toFixed(0);
+            
+            document.getElementById('depositionResult').innerHTML = `
+                沉积时间 Deposition Time: ${timeMinutes} min<br>
+                <small style="opacity: 0.8;">(${timeSeconds} seconds)</small>
+            `;
+        }
+
+        // 初始化所有计算
+        calculateResistThickness();
+        calculateEtchTime();
+        calculateDeposition();
+
+        // 添加层次点击交互
+        document.querySelectorAll('.layer').forEach(layer => {
+            layer.addEventListener('click', function() {
+                const layerType = this.getAttribute('data-layer');
+                const layerInfo = {
+                    'metal3': 'Top Metal Layer - 主要用于全局信号分布和电源网络',
+                    'via2': 'Via Connection - 连接Metal2和Metal3的垂直通孔',
+                    'metal2': 'Mid Metal Layer - 用于局部互连和时钟分布',
+                    'via1': 'Via Connection - 连接Metal1和Metal2的垂直通孔',
+                    'metal1': 'First Metal Layer - 连接器件的第一层金属',
+                    'contact': 'Contact Layer - 连接有源器件区域的接触孔',
+                    'poly': 'Polysilicon Gate - 多晶硅栅极，控制晶体管开关',
+                    'gate': 'Gate Oxide - 超薄氧化层，实现栅极隔离',
+                    'substrate': 'Silicon Substrate - 单晶硅基底，器件制造基础'
+                };
+                
+                alert(`🔬 ${layerType.toUpperCase()} 层信息:\n\n${layerInfo[layerType]}`);
+            });
+        });
+
+        // 添加流畅的滚动效果
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                    // 如果没有对应的元素，滚动到页面顶部
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 添加实时输入验证和格式化
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value < 0) this.value = 0;
+            });
+        });
+
+        // 键盘快捷键支持
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        document.querySelector('.tab[onclick*="lithography"]').click();
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        document.querySelector('.tab[onclick*="etching"]').click();
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        document.querySelector('.tab[onclick*="deposition"]').click();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
