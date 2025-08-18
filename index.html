@@ -341,41 +341,41 @@
           basePages() { return `https://${this.user}.github.io/${this.repo}/`; }
         };
         // 2) 使用 GitHub Pages 还是直接跳转到仓库里的 .md 文件
-        const USE_PAGES = true; // 若你没启用 Pages 或 docs 没有对应 .html，改成 false
+        const USE_PAGES = false; // 若你没启用 Pages 或 docs 没有对应 .html，改成 false
 
         // 3) 章节 -> 文件名 映射（把下面的文件名改成你的实际文章路径）
         const CHAPTER_LINKS = {
-          chapter1: 'ch1-nano-basics.md',
-          chapter2: 'ch2-photolithography.md',
-          chapter3: 'ch3-ebl.md',
-          chapter4: 'ch4-nil.md',
-          chapter5: 'ch5-etching.md',
-          chapter6: 'ch6-deposition.md',
-          chapter7: 'ch7-characterization.md',
-          chapter8: 'ch8-device-fab.md'
+          chapter1: 'Nano_Tech_Leaining_Ch1.md',
+          chapter2: 'Nano_Tech_Leaining_Ch2.md',
+          chapter3: 'Nano_Tech_Learning_Ch3.md',
+          chapter4: 'Nano_Tech_Learning_Ch4.md',
+          chapter5: 'Nano_Tech_Learning_Ch5.md',
+          chapter6: 'Nano_Tech_Learning_Ch6.md',
+          chapter7: 'Nano_Tech_Learning_Ch7.md',
+          chapter8: 'Nano_Tech_Learning_ch8.md'
         };
 
         // 4) 工艺流程步骤 -> 文件名 映射
         const FLOW_LINKS = {
-          cleaning: 'flow/cleaning-rca.md',
-          coating: 'flow/resist-coating.md',
-          exposure: 'flow/exposure-development.md',
-          transfer: 'flow/pattern-transfer-etch.md',
-          deposition: 'flow/film-deposition.md',
-          characterization: 'flow/characterization.md'
+          cleaning: 'Nano_Tech_Leaining_Ch2.md#process-flow',
+          coating: 'Nano_Tech_Leaining_Ch2.md#process-flow',
+          exposure: 'Nano_Tech_Leaining_Ch2.md#process-flow',
+          transfer: 'Nano_Tech_Learning_Ch5.md',
+          deposition: 'Nano_Tech_Learning_Ch6.md',
+          characterization: 'Nano_Tech_Learning_Ch7.md'
         };
 
         // 5) 层次结构 -> 文件名 映射（可选，没有就先留空）
         const LAYER_LINKS = {
-          metal3: 'interconnect/metal3.md',
-          via2: 'interconnect/via2.md',
-          metal2: 'interconnect/metal2.md',
-          via1: 'interconnect/via1.md',
-          metal1: 'interconnect/metal1.md',
-          contact: 'device/contact.md',
-          poly: 'device/polysilicon-gate.md',
-          gate: 'device/gate-oxide.md',
-          substrate: 'process/wafer-substrate.md'
+          metal3: 'Nano_Tech_Learning_Ch6.md',
+          via2: 'Nano_Tech_Learning_Ch6.md',
+          metal2: 'Nano_Tech_Learning_Ch6.md',
+          via1: 'Nano_Tech_Learning_Ch6.md',
+          metal1: 'Nano_Tech_Learning_Ch6.md',
+          contact: 'Nano_Tech_Learning_ch8.md',
+          poly: 'Nano_Tech_Learning_ch8.md',
+          gate: 'Nano_Tech_Learning_ch8.md',
+          substrate: 'Nano_Tech_Leaining_Ch1.md'
         };
 
         function resolveUrl(slug) {
