@@ -11,9 +11,9 @@
 *（4）挖沟道：挖坑道（trench），做矩阵。
 > 如何挖沟道？
 * （1）Resist：黑暗中给硅片涂抹一层光刻胶。 Thin coat of resist.
-<img width="903" height="341" alt="image" src="https://github.com/user-attachments/assets/3d4923df-fe49-4c9f-abc1-2ad688d01c9d" />
+<img width="903" height="341" alt="image" src="https://github.com/user-attachments/assets/3d4923df-fe49-4c9f-abc1-2ad688d01c9d" /><br/>
 * （2）Patterned Mask（图形掩模）：再照上光掩模进行曝光，让光线按照光掩模上设计好的坑位通过。
-<img width="590" height="691" alt="image" src="https://github.com/user-attachments/assets/e7a2f934-ff4f-40fd-b847-d34a1a8550d5" />
+<img width="590" height="691" alt="image" src="https://github.com/user-attachments/assets/e7a2f934-ff4f-40fd-b847-d34a1a8550d5" /><br/>
 * （3）Chemical Reaction：被照射的这一部分胶体就会疲软，随即被溶剂洗掉。<br/>
 * （4）Developing：剩余坚挺的光刻胶就形成了保护膜。<br/>
 * （5）Organic Solvent:有机溶剂，通过能腐蚀硅的溶剂，把没有光刻胶保护的坑位区域腐蚀掉一层，最后再把光刻胶保护膜清除。<br/>
